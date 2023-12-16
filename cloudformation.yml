@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  SshIp:
+    Type: String
+    Description: Ip address for ssh access.
+    Default: 0.0.0.0/0
+  ImageId:
+    Type: String
+    Description: ImageId of the AMI to be used for the instance.
+    Default: ami-0b898040803850657
+  InstanceType:
+    Type: String
+    Description: Instance type to be used for the instance.
+    Default: t2.micro
+  
+Resources:
+# Uncomment if you want ssh access to instance
+#  EC2KeyPair:
+#    Type: 'AWS::EC2::KeyPair'
+#    Properties: 
+#    KeyName: 'new-key'
+  EC2Sg:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties: 
+      GroupDescription: 'Allow SSH access'
+      SecurityGroupIngress:
+#        - IpProtocol: tcp
+#          CidrIp: !Ref SshIp
+#          FromPort: 22
+#          ToPort: 22
+        - IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          FromPort: 80
+          ToPort: 80
+# Uncomment if you want https access to instance
+#        - IpProtocol: tcp
+#         CidrIp: 0.0.0.0/0
+#         FromPort: 443
+#         ToPort: 443
+  EC2Instance:
+    Type: 'AWS::EC2::Instance'
+    DependsOn: EC2Sg
+    Properties: 
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref ImageId
+#      KeyName: !Ref EC2KeyPair
+      SecurityGroups:
+        - !Ref EC2Sg
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1 #root volume mount, make sure it matches your AMI
+          Ebs:
+            VolumeSize: 8
+            VolumeType: gp2
+Outputs:
+  InstanceId:
+    Value: !Ref EC2Instance
+    Description: InstanceId of the newly created EC2 instance
+    Export:
+      Name: !Sub ${AWS::StackName}-InstanceId
+  AZ:
+    Value: !GetAtt EC2Instance.AvailabilityZone
+    Description: Availability Zone of the newly created EC2 instance
+    Export:
+      Name: !Sub ${AWS::StackName}-AZ
+  
