@@ -24,6 +24,7 @@ Resources:
     Properties: 
       GroupDescription: 'Allow SSH access'
       SecurityGroupIngress:
+# Uncomment if you want ssh access to instance
 #        - IpProtocol: tcp
 #          CidrIp: !Ref SshIp
 #          FromPort: 22
