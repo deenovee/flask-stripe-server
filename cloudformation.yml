@@ -14,21 +14,19 @@ Parameters:
     Default: t2.micro
   
 Resources:
-# Uncomment if you want ssh access to instance
-#  EC2KeyPair:
-#    Type: 'AWS::EC2::KeyPair'
-#    Properties: 
-#    KeyName: 'new-key'
+  EC2KeyPair:
+    Type: 'AWS::EC2::KeyPair'
+    Properties: 
+    KeyName: 'new-key'
   EC2Sg:
     Type: 'AWS::EC2::SecurityGroup'
     Properties: 
       GroupDescription: 'Allow SSH access'
       SecurityGroupIngress:
-# Uncomment if you want ssh access to instance
-#        - IpProtocol: tcp
-#          CidrIp: !Ref SshIp
-#          FromPort: 22
-#          ToPort: 22
+        - IpProtocol: tcp
+          CidrIp: !Ref SshIp
+          FromPort: 22
+          ToPort: 22
         - IpProtocol: tcp
           CidrIp: 0.0.0.0/0
           FromPort: 80
@@ -44,7 +42,7 @@ Resources:
     Properties: 
       InstanceType: !Ref InstanceType
       ImageId: !Ref ImageId
-#      KeyName: !Ref EC2KeyPair
+      KeyName: !Ref EC2KeyPair
       SecurityGroups:
         - !Ref EC2Sg
       BlockDeviceMappings:
